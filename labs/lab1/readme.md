@@ -2,6 +2,11 @@
 
 Implementation of a counter in PostgreSQL
 
+## Prerequirements
+
+- PostgreSQL installed
+- `pip install psycopg2`
+
 ## How to start ?
 
 1.  add `.env` file at [lab1](./) folder and add `DB_NAME`, `DB_USER` and `DB_PASSWORD` variables
