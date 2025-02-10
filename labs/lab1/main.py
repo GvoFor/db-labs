@@ -7,7 +7,7 @@ from time import time
 from environment import DB_NAME, DB_USER, DB_PASSWORD
 
 NUMBER_OF_RUNS_FOR_MEASURE = 3
-NUMBER_OF_THREADS = 1
+NUMBER_OF_THREADS = 10
 NUMBER_OF_INCREMENTS = 10_000
 
 def avarage(values: list[float]) -> float:
