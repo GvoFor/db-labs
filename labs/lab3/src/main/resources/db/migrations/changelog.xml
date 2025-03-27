@@ -183,4 +183,21 @@
             <dropTable tableName="wind"/>
         </rollback>
     </changeSet>
+
+    <changeSet id="4::add_boolean_column" author="mykhailo.pumnia">
+        <addColumn tableName="weather">
+            <column name="can_go_outside" type="boolean"/>
+        </addColumn>
+        <update tableName="weather">
+            <column name="can_go_outside" valueComputed="
+                (temperature_celsius &gt; 15) AND
+                (temperature_celsius &lt; 30) AND
+                (condition_text IN ('Sunny', 'Clear'))
+            "/>
+        </update>
+
+        <rollback>
+            <dropColumn tableName="weather" columnName="can_go_outside"/>
+        </rollback>
+    </changeSet>
 </databaseChangeLog>
