@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro
+        http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+    
+    <changeSet id="1::initial" author="mykhailo.pumnia">
+        <createTable tableName="weather">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="country" type="varchar(40)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="location_name" type="varchar(40)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="temperature_celsius" type="numeric">
+                <constraints nullable="false"/>
+            </column>
+            <column name="condition_text" type="varchar(60)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="wind_mph" type="numeric">
+                <constraints nullable="false"/>
+            </column>
+            <column name="wind_kph" type="numeric">
+                <constraints nullable="false"/>
+            </column>
+            <column name="wind_degree" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="wind_direction" type="varchar(3)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sunrise" type="time">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2::fill_with_initial_data" author="mykhailo.pumnia" ignore="false">
+        <loadData
+            file="../initial_data.csv"
+            tableName="weather"
+        >
+            <column name="latitude" type="skip"/>
+            <column name="longitude" type="skip"/>
+            <column name="timezone" type="skip"/>
+            <column name="last_updated_epoch" type="skip"/>
+            <column name="temperature_fahrenheit" type="skip"/>
+            <column name="pressure_mb" type="skip"/>
+            <column name="pressure_in" type="skip"/>
+            <column name="precip_mm" type="skip"/>
+            <column name="precip_in" type="skip"/>
+            <column name="humidity" type="skip"/>
+            <column name="cloud" type="skip"/>
+            <column name="feels_like_celsius" type="skip"/>
+            <column name="feels_like_fahrenheit" type="skip"/>
+            <column name="visibility_km" type="skip"/>
+            <column name="visibility_miles" type="skip"/>
+            <column name="uv_index" type="skip"/>
+            <column name="gust_mph" type="skip"/>
+            <column name="gust_kph" type="skip"/>
+            <column name="air_quality_Carbon_Monoxide" type="skip"/>
+            <column name="air_quality_Ozone" type="skip"/>
+            <column name="air_quality_Nitrogen_dioxide" type="skip"/>
+            <column name="air_quality_Sulphur_dioxide" type="skip"/>
+            <column name="air_quality_PM2.5" type="skip"/>
+            <column name="air_quality_PM10" type="skip"/>
+            <column name="air_quality_us-epa-index" type="skip"/>
+            <column name="air_quality_gb-defra-index" type="skip"/>
+            <column name="sunset" type="skip"/>
+            <column name="moonrise" type="skip"/>
+            <column name="moonset" type="skip"/>
+            <column name="moon_phase" type="skip"/>
+            <column name="moon_illumination" type="skip"/>
+
+            <column name="country" type="varchar(40)"/>
+            <column name="location_name" type="varchar(40)"/>
+            <column name="last_updated" type="varchar(20)"/>
+            <column name="temperature_celsius" type="numeric"/>
+            <column name="condition_text" type="varchar(60)"/>
+            <column name="wind_mph" type="numeric"/>
+            <column name="wind_kph" type="numeric"/>
+            <column name="wind_degree" type="int"/>
+            <column name="wind_direction" type="varchar(3)"/>
+            <column name="sunrise" type="varchar(20)"/>
+        </loadData>
+        <rollback>
+            <delete tableName="weather"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
