@@ -101,4 +101,86 @@
             <delete tableName="weather"/>
         </rollback>
     </changeSet>
+
+    <changeSet id="3::separate_wind" author="mykhailo.pumnia">
+        <createTable tableName="wind">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="wind_mph" type="numeric">
+                <constraints nullable="false"/>
+            </column>
+            <column name="wind_kph" type="numeric">
+                <constraints nullable="false"/>
+            </column>
+            <column name="wind_degree" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="wind_direction" type="varchar(3)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        
+        <sql>
+            INSERT INTO wind (wind_mph, wind_kph, wind_degree, wind_direction)
+            SELECT DISTINCT wind_mph, wind_kph, wind_degree, wind_direction FROM weather;
+        </sql>
+
+        <addColumn tableName="weather">
+            <column name="wind_id" type="int"/>
+        </addColumn>
+
+        <sql>
+            UPDATE weather we
+            SET wind_id = w.id
+            FROM wind w
+            WHERE w.wind_mph = we.wind_mph
+            AND w.wind_kph = we.wind_kph
+            AND w.wind_degree = we.wind_degree
+            AND w.wind_direction = we.wind_direction;
+        </sql>
+
+        <addNotNullConstraint tableName="weather" columnName="wind_id"/>
+        <addForeignKeyConstraint baseTableName="weather"
+                             baseColumnNames="wind_id"
+                             referencedTableName="wind"
+                             referencedColumnNames="id"
+                             constraintName="fk_weather_wind"/>
+
+        <dropColumn tableName="weather">
+            <column name="wind_mph"/>
+            <column name="wind_kph"/>
+            <column name="wind_degree"/>
+            <column name="wind_direction"/>
+        </dropColumn>
+
+        <rollback>
+            <addColumn tableName="weather">
+                <column name="wind_mph" type="numeric"/>
+                <column name="wind_kph" type="numeric"/>
+                <column name="wind_degree" type="int"/>
+                <column name="wind_direction" type="varchar(3)"/>
+            </addColumn>
+
+            <sql>
+                UPDATE weather we
+                SET wind_mph = w.wind_mph,
+                    wind_kph = w.wind_kph,
+                    wind_degree = w.wind_degree,
+                    wind_direction = w.wind_direction
+                FROM wind w
+                WHERE we.wind_id = w.id;
+            </sql>
+
+            <addNotNullConstraint tableName="weather" columnName="wind_mph"/>
+            <addNotNullConstraint tableName="weather" columnName="wind_kph"/>
+            <addNotNullConstraint tableName="weather" columnName="wind_degree"/>
+            <addNotNullConstraint tableName="weather" columnName="wind_direction"/>
+
+            <dropForeignKeyConstraint baseTableName="weather" constraintName="fk_weather_wind"/>
+            <dropColumn tableName="weather" columnName="wind_id"/>
+
+            <dropTable tableName="wind"/>
+        </rollback>
+    </changeSet>
 </databaseChangeLog>
