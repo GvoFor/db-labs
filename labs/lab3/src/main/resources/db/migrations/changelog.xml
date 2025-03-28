@@ -49,12 +49,8 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="2(mysql)::fill_with_initial_data" author="mykhailo.pumnia" ignore="false">
-        <preConditions onFail="MARK_RAN">
-            <dbms type="mysql"/>
-        </preConditions>
-
-        <sql>
+    <changeSet id="2::fill_with_initial_data" author="mykhailo.pumnia" ignore="false">
+        <sql dbms="mysql">
             ALTER TABLE weather MODIFY sunrise VARCHAR(20);
         </sql>
 
@@ -106,72 +102,13 @@
             <column name="sunrise" type="varchar(20)"/>
         </loadData>
 
-        <sql>
+        <sql dbms="mysql">
             UPDATE weather 
             SET sunrise = STR_TO_DATE(sunrise, '%h:%i %p');
 
             ALTER TABLE weather MODIFY sunrise TIME NOT NULL;
         </sql>
 
-        <rollback>
-            <delete tableName="weather"/>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="2::fill_with_initial_data" author="mykhailo.pumnia" ignore="false">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <dbms type="mysql"/>
-            </not>
-        </preConditions>
-
-        <loadData
-            file="../initial_data.csv"
-            tableName="weather"
-        >
-            <column name="latitude" type="skip"/>
-            <column name="longitude" type="skip"/>
-            <column name="timezone" type="skip"/>
-            <column name="last_updated_epoch" type="skip"/>
-            <column name="temperature_fahrenheit" type="skip"/>
-            <column name="pressure_mb" type="skip"/>
-            <column name="pressure_in" type="skip"/>
-            <column name="precip_mm" type="skip"/>
-            <column name="precip_in" type="skip"/>
-            <column name="humidity" type="skip"/>
-            <column name="cloud" type="skip"/>
-            <column name="feels_like_celsius" type="skip"/>
-            <column name="feels_like_fahrenheit" type="skip"/>
-            <column name="visibility_km" type="skip"/>
-            <column name="visibility_miles" type="skip"/>
-            <column name="uv_index" type="skip"/>
-            <column name="gust_mph" type="skip"/>
-            <column name="gust_kph" type="skip"/>
-            <column name="air_quality_Carbon_Monoxide" type="skip"/>
-            <column name="air_quality_Ozone" type="skip"/>
-            <column name="air_quality_Nitrogen_dioxide" type="skip"/>
-            <column name="air_quality_Sulphur_dioxide" type="skip"/>
-            <column name="air_quality_PM2.5" type="skip"/>
-            <column name="air_quality_PM10" type="skip"/>
-            <column name="air_quality_us-epa-index" type="skip"/>
-            <column name="air_quality_gb-defra-index" type="skip"/>
-            <column name="sunset" type="skip"/>
-            <column name="moonrise" type="skip"/>
-            <column name="moonset" type="skip"/>
-            <column name="moon_phase" type="skip"/>
-            <column name="moon_illumination" type="skip"/>
-
-            <column name="country" type="varchar(40)"/>
-            <column name="location_name" type="varchar(40)"/>
-            <column name="last_updated" type="varchar(20)"/>
-            <column name="temperature_celsius" type="decimal(3,1)"/>
-            <column name="condition_text" type="varchar(60)"/>
-            <column name="wind_mph" type="decimal(5,1)"/>
-            <column name="wind_kph" type="decimal(5,1)"/>
-            <column name="wind_degree" type="int"/>
-            <column name="wind_direction" type="varchar(3)"/>
-            <column name="sunrise" type="varchar(20)"/>
-        </loadData>
         <rollback>
             <delete tableName="weather"/>
         </rollback>
@@ -232,13 +169,22 @@
                 <column name="wind_direction" type="varchar(3)"/>
             </addColumn>
 
-            <sql>
+            <sql dbms="mysql">
                 UPDATE weather we
                 JOIN wind w ON we.wind_id = w.id
                 SET we.wind_mph = w.wind_mph,
                     we.wind_kph = w.wind_kph,
                     we.wind_degree = w.wind_degree,
                     we.wind_direction = w.wind_direction;
+            </sql>
+            <sql dbms="postgresql">
+                UPDATE weather we
+                SET wind_mph = w.wind_mph,
+                    wind_kph = w.wind_kph,
+                    wind_degree = w.wind_degree,
+                    wind_direction = w.wind_direction
+                FROM wind w
+                WHERE we.wind_id = w.id;
             </sql>
 
             <addNotNullConstraint tableName="weather" columnName="wind_mph" columnDataType="decimal(5,1)"/>
