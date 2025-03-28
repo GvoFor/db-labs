@@ -1,15 +1,17 @@
-package ua.mpumnia.dbmigrations;
+package ua.mpumnia.dbmigrations.domain;
 
 import java.sql.Time;
 import java.sql.Timestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity(name="weather")
+@Table(name="weather")
 public class Weather {
   
     @Id
@@ -30,27 +32,20 @@ public class Weather {
     @Column(name="condition_text", nullable=false)
     private String conditionText;
 
-    @Column(name="wind_mph", nullable=false)
-    private float windMph;
-
-    @Column(name="wind_kph", nullable=false)
-    private float windKph;
-
-    @Column(name="wind_degree", nullable=false)
-    private int windDegree;
-
-    @Enumerated(value=EnumType.STRING)
-    @Column(name="wind_direction", nullable=false)
-    private WindDirection windDirection;
+    @ManyToOne @JoinColumn(name="wind_id", nullable=false)
+    private Wind wind;
 
     @Column(name="sunrise", nullable=false)
     private Time sunrise;
 
+    @Column(name="can_go_outside", nullable=false)
+    private boolean canGoOutside;
+
     @Override
     public String toString() {
         return String.format(
-            "Weather {\n  id=%d,\n  country=%s,\n  location=%s,\n  condition=%s,\n  wind_dir=%s,\n  sunrise=%s,\n  updatedAt=%s\n}",
-            id, country, locationName, conditionText, windDirection, sunrise, lastUpdated
+            "Weather {\n  id=%d,\n  country=%s,\n  location=%s,\n  condition=%s,\n  wind=%s,\n  sunrise=%s,\n  updatedAt=%s,\n  canGoOutside=%s\n}",
+            id, country, locationName, conditionText, wind, sunrise, lastUpdated, canGoOutside
         );
     }
 
@@ -82,20 +77,12 @@ public class Weather {
         return temperatureCelsius;
     }
 
-    public int getWindDegree() {
-        return windDegree;
+    public Wind getWind() {
+        return wind;
     }
 
-    public WindDirection getWindDirection() {
-        return windDirection;
-    }
-
-    public float getWindKph() {
-        return windKph;
-    }
-
-    public float getWindMph() {
-        return windMph;
+    public boolean isCanGoOutside() {
+        return canGoOutside;
     }
 
     public void setId(int id) {
@@ -126,15 +113,11 @@ public class Weather {
         this.temperatureCelsius = temperatureCelsius;
     }
 
-    public void setWindDegree(int windDegree) {
-        this.windDegree = windDegree;
+    public void setWind(Wind wind) {
+        this.wind = wind;
     }
 
-    public void setWindDirection(WindDirection windDirection) {
-        this.windDirection = windDirection;
-    }
-
-    public void setWindKph(float windKph) {
-        this.windKph = windKph;
+    public void setCanGoOutside(boolean canGoOutside) {
+        this.canGoOutside = canGoOutside;
     }
 }

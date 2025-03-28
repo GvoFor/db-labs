@@ -30,6 +30,10 @@ application {
     mainClass = 'ua.mpumnia.dbmigrations.Main'
 }
 
+tasks.named('run') {
+    standardInput = System.in
+}
+
 file("/.env").withReader { 
    Properties props = new Properties()
    props.load(it)
