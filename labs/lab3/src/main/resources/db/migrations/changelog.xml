@@ -25,16 +25,16 @@
             <column name="last_updated" type="datetime">
                 <constraints nullable="false"/>
             </column>
-            <column name="temperature_celsius" type="numeric">
+            <column name="temperature_celsius" type="decimal(3,1)">
                 <constraints nullable="false"/>
             </column>
             <column name="condition_text" type="varchar(60)">
                 <constraints nullable="false"/>
             </column>
-            <column name="wind_mph" type="numeric">
+            <column name="wind_mph" type="decimal(5,1)">
                 <constraints nullable="false"/>
             </column>
-            <column name="wind_kph" type="numeric">
+            <column name="wind_kph" type="decimal(5,1)">
                 <constraints nullable="false"/>
             </column>
             <column name="wind_degree" type="int">
@@ -97,10 +97,10 @@
             <column name="country" type="varchar(40)"/>
             <column name="location_name" type="varchar(40)"/>
             <column name="last_updated" type="varchar(20)"/>
-            <column name="temperature_celsius" type="numeric"/>
+            <column name="temperature_celsius" type="decimal(3,1)"/>
             <column name="condition_text" type="varchar(60)"/>
-            <column name="wind_mph" type="numeric"/>
-            <column name="wind_kph" type="numeric"/>
+            <column name="wind_mph" type="decimal(5,1)"/>
+            <column name="wind_kph" type="decimal(5,1)"/>
             <column name="wind_degree" type="int"/>
             <column name="wind_direction" type="varchar(3)"/>
             <column name="sunrise" type="varchar(20)"/>
@@ -164,10 +164,10 @@
             <column name="country" type="varchar(40)"/>
             <column name="location_name" type="varchar(40)"/>
             <column name="last_updated" type="varchar(20)"/>
-            <column name="temperature_celsius" type="numeric"/>
+            <column name="temperature_celsius" type="decimal(3,1)"/>
             <column name="condition_text" type="varchar(60)"/>
-            <column name="wind_mph" type="numeric"/>
-            <column name="wind_kph" type="numeric"/>
+            <column name="wind_mph" type="decimal(5,1)"/>
+            <column name="wind_kph" type="decimal(5,1)"/>
             <column name="wind_degree" type="int"/>
             <column name="wind_direction" type="varchar(3)"/>
             <column name="sunrise" type="varchar(20)"/>
@@ -182,10 +182,10 @@
             <column name="id" type="int" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="wind_mph" type="numeric">
+            <column name="wind_mph" type="decimal(5,1)">
                 <constraints nullable="false"/>
             </column>
-            <column name="wind_kph" type="numeric">
+            <column name="wind_kph" type="decimal(5,1)">
                 <constraints nullable="false"/>
             </column>
             <column name="wind_degree" type="int">
@@ -226,8 +226,8 @@
 
         <rollback>
             <addColumn tableName="weather">
-                <column name="wind_mph" type="numeric"/>
-                <column name="wind_kph" type="numeric"/>
+                <column name="wind_mph" type="decimal(5,1)"/>
+                <column name="wind_kph" type="decimal(5,1)"/>
                 <column name="wind_degree" type="int"/>
                 <column name="wind_direction" type="varchar(3)"/>
             </addColumn>
@@ -241,8 +241,8 @@
                     we.wind_direction = w.wind_direction;
             </sql>
 
-            <addNotNullConstraint tableName="weather" columnName="wind_mph" columnDataType="numeric"/>
-            <addNotNullConstraint tableName="weather" columnName="wind_kph" columnDataType="numeric"/>
+            <addNotNullConstraint tableName="weather" columnName="wind_mph" columnDataType="decimal(5,1)"/>
+            <addNotNullConstraint tableName="weather" columnName="wind_kph" columnDataType="decimal(5,1)"/>
             <addNotNullConstraint tableName="weather" columnName="wind_degree" columnDataType="int"/>
             <addNotNullConstraint tableName="weather" columnName="wind_direction" columnDataType="varchar(3)"/>
 

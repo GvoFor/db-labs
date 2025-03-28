@@ -48,13 +48,13 @@ public class ConsoleUI {
               list.forEach(weather -> {
                 System.out.println("Location: %s".formatted(weather.getLocationName()));
                 System.out.println("Last updated: %s".formatted(weather.getLastUpdated()));
-                System.out.println("Temperature (C): %.2f".formatted(weather.getTemperatureCelsius()));
+                System.out.println("Temperature (C): %.1f".formatted(weather.getTemperatureCelsius()));
                 System.out.println("Sunrise: %s".formatted(weather.getSunrise()));
                 System.out.println("Condition: %s".formatted(weather.getConditionText()));
                 System.out.println("Wind degree: %d".formatted(weather.getWind().getWindDegree()));
                 System.out.println("Wind direction: %s".formatted(weather.getWind().getWindDirection()));
-                System.out.println("Wind kph: %.2f".formatted(weather.getWind().getWindKph()));
-                System.out.println("Wind mph: %.2f".formatted(weather.getWind().getWindMph()));
+                System.out.println("Wind kph: %.1f".formatted(weather.getWind().getWindKph()));
+                System.out.println("Wind mph: %.1f".formatted(weather.getWind().getWindMph()));
                 System.out.println("Can go outside: %s\n".formatted(weather.isCanGoOutside()));
               });
             }
