@@ -39,10 +39,27 @@ public class ConsoleUI {
             Date date = new Date(year - 1900, month - 1, day);
 
             System.out.println("Country: \"%s\", Date: \"%s\"".formatted(country, date));
-            System.out.println("Here are weather details:");
 
             List<Weather> list = service.getByCountryAndDate(country, date);
-            System.out.println(list);
+            if (list.isEmpty()) {
+              System.out.println("There is no data matching your input!");
+            } else {
+              System.out.println("Here are weather details:\n");
+              list.forEach(weather -> {
+                System.out.println("Location: %s".formatted(weather.getLocationName()));
+                System.out.println("Last updated: %s".formatted(weather.getLastUpdated()));
+                System.out.println("Temperature (C): %.2f".formatted(weather.getTemperatureCelsius()));
+                System.out.println("Sunrise: %s".formatted(weather.getSunrise()));
+                System.out.println("Condition: %s".formatted(weather.getConditionText()));
+                System.out.println("Wind degree: %d".formatted(weather.getWind().getWindDegree()));
+                System.out.println("Wind direction: %s".formatted(weather.getWind().getWindDirection()));
+                System.out.println("Wind kph: %.2f".formatted(weather.getWind().getWindKph()));
+                System.out.println("Wind mph: %.2f".formatted(weather.getWind().getWindMph()));
+                System.out.println("Can go outside: %s\n".formatted(weather.isCanGoOutside()));
+              });
+            }
+
+
 
             System.out.println("You can try again or enter 'exit' to quit the program");
         }
