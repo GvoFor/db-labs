@@ -7,7 +7,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity(name="weather")
@@ -32,7 +32,7 @@ public class Weather {
     @Column(name="condition_text", nullable=false)
     private String conditionText;
 
-    @ManyToOne @JoinColumn(name="wind_id", nullable=false)
+    @OneToOne @JoinColumn(name="wind_id", nullable=false)
     private Wind wind;
 
     @Column(name="sunrise", nullable=false)

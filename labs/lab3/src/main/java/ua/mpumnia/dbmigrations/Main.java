@@ -16,7 +16,8 @@ import ua.mpumnia.dbmigrations.ui.ConsoleUI;
 
 public class Main {
 
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/db_lab3";
+    // private static final String DB_URL = "jdbc:postgresql://localhost:5432/db_lab3";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/db_lab3";
 
     public static void main(String[] args) {
         Dotenv dotenv = Dotenv.configure().load();

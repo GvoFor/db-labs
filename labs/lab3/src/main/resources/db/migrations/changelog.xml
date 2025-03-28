@@ -49,7 +49,82 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="2(mysql)::fill_with_initial_data" author="mykhailo.pumnia" ignore="false">
+        <preConditions onFail="MARK_RAN">
+            <dbms type="mysql"/>
+        </preConditions>
+
+        <sql>
+            ALTER TABLE weather MODIFY sunrise VARCHAR(20);
+        </sql>
+
+        <loadData
+            file="../initial_data.csv"
+            tableName="weather"
+        >
+            <column name="latitude" type="skip"/>
+            <column name="longitude" type="skip"/>
+            <column name="timezone" type="skip"/>
+            <column name="last_updated_epoch" type="skip"/>
+            <column name="temperature_fahrenheit" type="skip"/>
+            <column name="pressure_mb" type="skip"/>
+            <column name="pressure_in" type="skip"/>
+            <column name="precip_mm" type="skip"/>
+            <column name="precip_in" type="skip"/>
+            <column name="humidity" type="skip"/>
+            <column name="cloud" type="skip"/>
+            <column name="feels_like_celsius" type="skip"/>
+            <column name="feels_like_fahrenheit" type="skip"/>
+            <column name="visibility_km" type="skip"/>
+            <column name="visibility_miles" type="skip"/>
+            <column name="uv_index" type="skip"/>
+            <column name="gust_mph" type="skip"/>
+            <column name="gust_kph" type="skip"/>
+            <column name="air_quality_Carbon_Monoxide" type="skip"/>
+            <column name="air_quality_Ozone" type="skip"/>
+            <column name="air_quality_Nitrogen_dioxide" type="skip"/>
+            <column name="air_quality_Sulphur_dioxide" type="skip"/>
+            <column name="air_quality_PM2.5" type="skip"/>
+            <column name="air_quality_PM10" type="skip"/>
+            <column name="air_quality_us-epa-index" type="skip"/>
+            <column name="air_quality_gb-defra-index" type="skip"/>
+            <column name="sunset" type="skip"/>
+            <column name="moonrise" type="skip"/>
+            <column name="moonset" type="skip"/>
+            <column name="moon_phase" type="skip"/>
+            <column name="moon_illumination" type="skip"/>
+
+            <column name="country" type="varchar(40)"/>
+            <column name="location_name" type="varchar(40)"/>
+            <column name="last_updated" type="varchar(20)"/>
+            <column name="temperature_celsius" type="numeric"/>
+            <column name="condition_text" type="varchar(60)"/>
+            <column name="wind_mph" type="numeric"/>
+            <column name="wind_kph" type="numeric"/>
+            <column name="wind_degree" type="int"/>
+            <column name="wind_direction" type="varchar(3)"/>
+            <column name="sunrise" type="varchar(20)"/>
+        </loadData>
+
+        <sql>
+            UPDATE weather 
+            SET sunrise = STR_TO_DATE(sunrise, '%h:%i %p');
+
+            ALTER TABLE weather MODIFY sunrise TIME NOT NULL;
+        </sql>
+
+        <rollback>
+            <delete tableName="weather"/>
+        </rollback>
+    </changeSet>
+
     <changeSet id="2::fill_with_initial_data" author="mykhailo.pumnia" ignore="false">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <dbms type="mysql"/>
+            </not>
+        </preConditions>
+
         <loadData
             file="../initial_data.csv"
             tableName="weather"
@@ -122,8 +197,8 @@
         </createTable>
         
         <sql>
-            INSERT INTO wind (wind_mph, wind_kph, wind_degree, wind_direction)
-            SELECT DISTINCT wind_mph, wind_kph, wind_degree, wind_direction FROM weather;
+            INSERT INTO wind (id, wind_mph, wind_kph, wind_degree, wind_direction)
+            SELECT id, wind_mph, wind_kph, wind_degree, wind_direction FROM weather;
         </sql>
 
         <addColumn tableName="weather">
@@ -131,16 +206,11 @@
         </addColumn>
 
         <sql>
-            UPDATE weather we
-            SET wind_id = w.id
-            FROM wind w
-            WHERE w.wind_mph = we.wind_mph
-            AND w.wind_kph = we.wind_kph
-            AND w.wind_degree = we.wind_degree
-            AND w.wind_direction = we.wind_direction;
+            UPDATE weather
+            SET wind_id = id;
         </sql>
 
-        <addNotNullConstraint tableName="weather" columnName="wind_id"/>
+        <addNotNullConstraint tableName="weather" columnName="wind_id" columnDataType="int"/>
         <addForeignKeyConstraint baseTableName="weather"
                              baseColumnNames="wind_id"
                              referencedTableName="wind"
@@ -164,18 +234,17 @@
 
             <sql>
                 UPDATE weather we
-                SET wind_mph = w.wind_mph,
-                    wind_kph = w.wind_kph,
-                    wind_degree = w.wind_degree,
-                    wind_direction = w.wind_direction
-                FROM wind w
-                WHERE we.wind_id = w.id;
+                JOIN wind w ON we.wind_id = w.id
+                SET we.wind_mph = w.wind_mph,
+                    we.wind_kph = w.wind_kph,
+                    we.wind_degree = w.wind_degree,
+                    we.wind_direction = w.wind_direction;
             </sql>
 
-            <addNotNullConstraint tableName="weather" columnName="wind_mph"/>
-            <addNotNullConstraint tableName="weather" columnName="wind_kph"/>
-            <addNotNullConstraint tableName="weather" columnName="wind_degree"/>
-            <addNotNullConstraint tableName="weather" columnName="wind_direction"/>
+            <addNotNullConstraint tableName="weather" columnName="wind_mph" columnDataType="numeric"/>
+            <addNotNullConstraint tableName="weather" columnName="wind_kph" columnDataType="numeric"/>
+            <addNotNullConstraint tableName="weather" columnName="wind_degree" columnDataType="int"/>
+            <addNotNullConstraint tableName="weather" columnName="wind_direction" columnDataType="varchar(3)"/>
 
             <dropForeignKeyConstraint baseTableName="weather" constraintName="fk_weather_wind"/>
             <dropColumn tableName="weather" columnName="wind_id"/>
