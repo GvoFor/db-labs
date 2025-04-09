@@ -306,11 +306,11 @@ console.log(`7) Кількість товарів в першому замовл
 // 8) Виведіть тільки інформацію про кастомера і номери кредитної карт, для замовлень вартість яких перевищує певну суму
 const someCustomers = db.getCollection('orders').aggregate([
   { $match: { total_sum: { $gt: 2000 } }},
-  { $project: { customer: 1, "payment.cardId": 1 } }
+  { $project: { _id: 0, customer: 1, "payment.cardId": 1 } }
 ]);
 
 console.log('8) Кастомери і номера їх кредитних карток для замовлень від 2000:');
-console.log(someCustomers);
+someCustomers.forEach(console.log);
 
 // 9) Видаліть товар з замовлень, зроблених за певний період дат
 db.getCollection('orders').updateMany({
@@ -333,7 +333,7 @@ db.getCollection('orders').updateMany({
 db.getCollection('orders').updateMany({}, [
   { $set: { "customer.name": "John", "customer.surname": "Doe" } }
 ]);
-console.log(db.getCollection('orders').find({}, { customer: 1 }));
+// console.log(db.getCollection('orders').find({}, { customer: 1 }));
 
 // 11) Знайдіть замовлення зроблені одним замовником, і виведіть тільки інформацію про кастомера та товари у замовлені
 //     підставивши замість ObjectId("***") назви товарів та їх вартість (аналог join-а між таблицями orders та items).
@@ -375,6 +375,7 @@ const ordersWithItems = db.getCollection('orders').aggregate([
   },
 ]);
 
+console.log('\n11)');
 ordersWithItems.forEach(console.log)
 
 // === capped collection ===
